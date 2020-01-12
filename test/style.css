@@ -1,0 +1,12 @@
+.folder-names-container {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.min-width-150 {
+    min-width: 150px;
+}
+
+li.active > button > i {
+    color: white;
+}
