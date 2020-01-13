@@ -1,7 +1,13 @@
 <script>
+    
 var rootFldrId = 'root';
-var importedFolders = [];
+var rootFldrNm = 'Drive root';
+var folderIds = [rootFldrId]
+var folderNames = [rootFldrNm];
+var folders = [{id: rootFldrId, name: rootFldrNm}];
+var importedFldrIds = [];
 var selectedFolder = rootFldrId;
+var downloadList = [];
 
 $(function () {
     // input file url
@@ -32,7 +38,7 @@ $(function () {
     $('#number-wildcard').change(updateGeneratedLinks);
 
     // folder list
-    addFolderToList('Drive root', rootFldrId).addClass('active');
+    addFolderToList(rootFldrNm, 0).addClass('active');
     
     // buttons
 
@@ -107,7 +113,6 @@ function showStatus(msg, error) {
     }
     window.setTimeout(hideStatus, timeout);
 }
-
 function hideStatus() {
     $('#status-message').addClass('invisible');
 }
@@ -157,8 +162,8 @@ function folderClicked() {
 
 function expandBtnClicked() {
     var btn = $(this); // li>span .expand
-    var id = btn.attr('value');
-    if (importedFolders.indexOf(id) > -1) {
+    var id = +btn.attr('value');
+    if (importedFldrIds.indexOf(id) > -1) {
         var expanded = btn.attr('aria-expanded'); //="true"
         var targetUList = $(btn.attr('data-target'));
         var collapsing = targetUList.hasClass('collapsing');
@@ -176,8 +181,10 @@ function expandBtnClicked() {
         return;
     } else {
         addSpinner(btn.parent());
-        importedFolders.push(id);
+        importedFldrIds.push(id);
     }
+
+    var folderId = folders[id].id;
 
     google.script.run
         .withSuccessHandler(function (data, element) { // data{ id, folders }, element: btn
@@ -194,7 +201,7 @@ function expandBtnClicked() {
             showStatus('Folder list failed to load. ' + msg, true);
         })
         .withUserObject(btn)
-        .getFolders(id);
+        .getFolders(folderId);
 }
 
 function addSpinner(element) {
@@ -206,20 +213,42 @@ function removeSpinner(element) {
 }
 
 function updateFolderNames(data, btn) {
-    var folders = data.folders;
-    var id = data.id;
+    var newFolders = data.folders;
+    var folderId = data.id;
+    var id = folders.findIndex(function (element) {
+        return this == element.id;
+    }, folderId);
     var listItem = btn.parent(); // li
-    var parentList = listItem.parent();
 
-    var folderNames = [];
-    for (var item in folders) {
-        folderNames.push(item);
+    var newFolderArr = [];
+
+    for (var item in newFolders) {
+        newFolderArr.push({
+            id: item,
+            name: newFolders[item]
+        });
     }
-    if (folderNames.length == 0) {
+
+    if (newFolderArr.length == 0) {
         btn.addClass('invisible');
         return;
     }
-    folderNames.sort(); //folder names
+
+    newFolderArr.sort(function (a, b) {
+        var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    });
+
+    console.log(newFolderArr);
 
     var newList = $('<ul></ul>')
         .attr('id', 'ul-' + id)
@@ -231,16 +260,29 @@ function updateFolderNames(data, btn) {
         .attr('aria-expanded', 'false')
         .attr('aria-controls', 'ul-' + id);
 
-    for (var i in folderNames) {
-        var name = folderNames[i];
-        addFolderToList(name, folders[name], newList);
+    for (var i in newFolderArr) {
+        var newId = folders.length;
+        folders.push(newFolderArr[i]);
+        addFolderToList(newFolderArr[i].name, newId, newList);
     }
 
     listItem.after(newList);
     newList.collapse('show');
 }
 
-// save button
+// action buttons
+function btnAddClicked() {
+    var fileUrl = $('#input-file-url').val();
+    if (fileUrl == '') {
+        fileInput.focus();
+        return;
+    }
+
+    var selectedLi = $('#list-folder-names').find('li.active');
+    var targetFldrId = selectedLi.attr('id');
+    var targetFldrName = selectedLi
+}
+
 function btnSaveClicked() {
     var fileUrl = $('#input-file-url').val();
     if (fileUrl == '') {

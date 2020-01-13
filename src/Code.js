@@ -22,7 +22,6 @@ function doGet(e) {
  */
 function getFolders(parentId) {
   var parent = parentId == 'root' ? DriveApp.getRootFolder() : DriveApp.getFolderById(parentId);
-//  parent = DriveApp.getRootFolder();
   var data = {
     id: parentId,
     folders: {}
@@ -30,7 +29,7 @@ function getFolders(parentId) {
   var iterator = parent.getFolders();
   while (iterator.hasNext()) {
     var folder = iterator.next();
-    data.folders[folder.getName()] = folder.getId();
+    data.folders[folder.getId()] = folder.getName();
   }
   return data;
 }

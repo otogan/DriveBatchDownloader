@@ -1,6 +1,12 @@
+var sequentialSttngs = {from: 0, to: 100, wildcard: 0};
 var rootFldrId = 'root';
+var rootFldrNm = 'Drive root';
+var folders = [{id: rootFldrId, name: rootFldrNm}];
 var importedFolders = [];
-var selectedFolder = rootFldrId;
+var selectedFolder = 0;
+var downloadList = [];
+var downloading = false;
+
 
 $(function () {
     // input file url
@@ -26,15 +32,24 @@ $(function () {
                     .addClass('far');
             });
 
-    $('#number-from').change(numberFromChanged);
-    $('#number-to').change(numberToChanged);
-    $('#number-wildcard').change(updateGeneratedLinks);
+    $('#number-from').on("change paste keyup", numberFromChanged);
+    $('#number-to').on("change paste keyup", numberToChanged);
+    $('#number-wildcard').on("change paste keyup", numberWildcardChanged);
 
     // folder list
-    addFolderToList('Drive root', rootFldrId).addClass('active');
+    addFolderToList(rootFldrNm, 0).addClass('active');
     
     // buttons
+    $('#btn-add').click(btnAddClicked);
 
+    // test case
+    $('#input-file-url')
+        .val('http://www.example.com/image*.jpeg')
+        .change();
+    $('#number-to')
+        .val(30)
+        .change();
+    $('#btn-add').click();
 });
 
 // input URL
@@ -62,29 +77,50 @@ function btnSequentialSettingsClicked() {
     }
 }
 
-// sequential settings numbers cofiguration
+// sequential settings - numbers cofiguration
 function numberFromChanged() {
     var from = +this.value;
-    $('#number-to').attr('min', ++from);
+    var inputTo = $('#number-to');
+    inputTo.attr('min', from);
+    var to = +inputTo.val();
+    if (from > to) {
+        to = from;
+        inputTo.val(to);
+    }
+    sequentialSttngs.from = from;
+    sequentialSttngs.to = to;
     updateGeneratedLinks();
 }
 function numberToChanged() {
     var to = +this.value;
-    $('#number-from').attr('max', --to);
+    var inputFrom = $('#number-from');
+    inputFrom.attr('max', to);
+    var from = +inputFrom.val();
+    if (from > to) {
+        from = to;
+        inputFrom.val(from);
+    }
+    sequentialSttngs.from = from;
+    sequentialSttngs.to = to;
+    updateGeneratedLinks();
+}
+function numberWildcardChanged() {
+    var wildcard = +this.value;
+    sequentialSttngs.wildcard = wildcard;
     updateGeneratedLinks();
 }
 
-// sequential settings generated links
+// sequential settings - generated links
 function updateGeneratedLinks() {
     var fileUrl = $('#input-file-url').val();
-    var numFrom = $('#number-from').val();
-    var numSec = '' + (+numFrom + 1);
-    var numTo = $('#number-to').val();
+    var numFrom = '' + sequentialSttngs.from;
+    var numSec = '' + (sequentialSttngs.from + 1);
+    var numTo = '' + sequentialSttngs.to;
     numTo = +numTo > +numFrom ? numTo : numSec;
-    var numWildcard = $('#number-wildcard').val();
-    while (numFrom.length < +numWildcard) numFrom = "0" + numFrom;
-    while (numSec.length < +numWildcard) numSec = "0" + numSec;
-    while (numTo.length < +numWildcard) numTo = "0" + numTo;
+    var numWildcard = sequentialSttngs.wildcard;
+    while (numFrom.length < numWildcard) numFrom = "0" + numFrom;
+    while (numSec.length < numWildcard) numSec = "0" + numSec;
+    while (numTo.length < numWildcard) numTo = "0" + numTo;
 
     $('#link-1').text(fileUrl.replace(/\*/g, numFrom));
     $('#link-2').text(fileUrl.replace(/\*/g, numSec));
@@ -106,7 +142,6 @@ function showStatus(msg, error) {
     }
     window.setTimeout(hideStatus, timeout);
 }
-
 function hideStatus() {
     $('#status-message').addClass('invisible');
 }
@@ -156,7 +191,7 @@ function folderClicked() {
 
 function expandBtnClicked() {
     var btn = $(this); // li>span .expand
-    var id = btn.attr('value');
+    var id = +btn.attr('value');
     if (importedFolders.indexOf(id) > -1) {
         var expanded = btn.attr('aria-expanded'); //="true"
         var targetUList = $(btn.attr('data-target'));
@@ -178,6 +213,8 @@ function expandBtnClicked() {
         importedFolders.push(id);
     }
 
+    var folderId = folders[id].id;
+
     google.script.run
         .withSuccessHandler(function (data, element) { // data{ id, folders }, element: btn
             console.info('folder names loaded');
@@ -193,53 +230,173 @@ function expandBtnClicked() {
             showStatus('Folder list failed to load. ' + msg, true);
         })
         .withUserObject(btn)
-        .getFolders(id);
+        .getFolders(folderId);
 }
 
+// folder list - spinners
 function addSpinner(element) {
     element.append('<span id="spinner" class="spinner-border spinner-border-sm"></span>');
 }
-
 function removeSpinner(element) {
     element.find('#spinner').remove();
 }
 
 function updateFolderNames(data, btn) {
-    var folders = data.folders;
-    var id = data.id;
+    var newFolders = data.folders;
+    var folderId = data.id;
+    var id = folders.findIndex(function (element) {
+        return this == element.id;
+    }, folderId);
     var listItem = btn.parent(); // li
-    var parentList = listItem.parent();
 
-    var folderNames = [];
-    for (var item in folders) {
-        folderNames.push(item);
+    var newFolderArr = [];
+
+    for (var item in newFolders) {
+        newFolderArr.push({
+            id: item,
+            name: newFolders[item]
+        });
     }
-    if (folderNames.length == 0) {
+
+    if (newFolderArr.length == 0) {
         btn.addClass('invisible');
         return;
     }
-    folderNames.sort(); //folder names
+
+    newFolderArr.sort(function (a, b) {
+        var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    });
 
     var newList = $('<ul></ul>')
         .attr('id', 'ul-' + id)
         .addClass('list-group pl-3 collapse');
 
-    btn
+    btn // collaplse controller
         .attr('data-toggle', 'collapse')
         .attr('data-target', '#ul-' + id)
         .attr('aria-expanded', 'false')
         .attr('aria-controls', 'ul-' + id);
 
-    for (var i in folderNames) {
-        var name = folderNames[i];
-        addFolderToList(name, folders[name], newList);
+    for (var i in newFolderArr) {
+        var newId = folders.length;
+        folders.push(newFolderArr[i]);
+        addFolderToList(newFolderArr[i].name, newId, newList);
     }
 
     listItem.after(newList);
     newList.collapse('show');
 }
 
-// save button
+// action buttons
+function btnAddClicked() {
+    var fileUrl = $('#input-file-url').val();
+    if (fileUrl == '') {
+        fileInput.focus();
+        return;
+    }
+
+    var targetFolder = folders[selectedFolder];
+
+    var asterisk = fileUrl.search(/\*/) > -1;
+    var from = sequentialSttngs.from;
+    var to = sequentialSttngs.to;
+    var wildcard = sequentialSttngs.wildcard;
+
+    do {
+        var newUrl = fileUrl;
+        if (asterisk) {
+            var n = '' + from;
+            while (n.length < wildcard) n = '0' + n;
+            newUrl = newUrl.replace(/\*/g, n);
+            from++;
+        }
+
+        // add data to the downloadList
+        var id = downloadList.length;
+        downloadList.push({
+            status: 'ready',
+            url: newUrl,
+            fileName: newUrl,
+            folderId: targetFolder.id,
+            folderName: targetFolder.name
+        });
+
+        addItemToDownloadList(id);
+
+    } while (asterisk && from <= to);
+
+    // add downloading check
+}
+
+function addItemToDownloadList(id) {
+    var downloadData = downloadList[id];
+    var cStatIcon = $('<i></i>')
+        .addClass(getStatClass(downloadData.status));
+    var cStat = $('<th></th>')
+        .attr('scope', 'row')
+        .addClass('text-center')
+        .append(cStatIcon);
+    var cFile = $('<td></td>')
+        .addClass('w-50 cFile')
+        .append(downloadData.fileName);
+    var cFolder = $('<td></td>')
+        .addClass('w-50 cFolder')
+        .append(downloadData.folderName);
+    var cActionEraseBtnIcon = $('<i></i>')
+        .addClass('far fa-trash-alt');
+    var cActionEraseBtn = $('<button></button>')
+        .attr('type', 'button')
+        .addClass('btn btn-default btn-sm cActionEraseBtn')
+        .append(cActionEraseBtnIcon)
+        .click(cActionEraseBtnClicked)
+        .hover(
+            function () {
+                $(this).addClass('text-danger')
+                    .find('i')
+                    .removeClass('far')
+                    .addClass('fas');
+            },
+            function () {
+                $(this).removeClass('text-danger')
+                    .find('i')
+                    .removeClass('fas')
+                    .addClass('far');
+            });
+    var cAction = $('<td></td>')
+        .addClass('text-center cAction')
+        .append(cActionEraseBtn);
+    var newRow = $('<tr></tr>')
+        .attr('id', 'tr-' + id)
+        .append(cStat, cFile, cFolder, cAction);
+    $('#table-download-list > tbody')
+        .append(newRow);
+}
+
+function getStatClass(stat) {
+    var stats = {
+        ready: 'far fa-clock',
+        downloading: 'spinner-grow spinner-grow-sm',
+        success: 'fas fa-cloud',
+        fail: 'fas fa-exclamation-circle'
+    }
+    return stat in stats ? stats[stat] : 'fas fa-times';
+}
+
+function cActionEraseBtnClicked() {
+
+}
+
+// deprecated
 function btnSaveClicked() {
     var fileUrl = $('#input-file-url').val();
     if (fileUrl == '') {

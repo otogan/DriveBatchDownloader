@@ -86,7 +86,7 @@
                     </div>
 
                     <!-- Sequential numbers -->
-                    <div class="d-flex justify-content-between flex-wrap">
+                    <div class="d-flex justify-content-between flex-wrap my-1">
                         <div class="input-group mx-1 w-25 min-width-150">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">From:</span>
@@ -97,7 +97,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">To:</span>
                             </div>
-                            <input type="number" id="number-to" class="form-control" placeholder="100" value="100" min="1">
+                            <input type="number" id="number-to" class="form-control" placeholder="100" value="100" min="0">
                         </div>
                         <div class="input-group mx-1 w-25 min-width-150">
                             <div class="input-group-prepend">
@@ -147,7 +147,7 @@
             <div id="folder-conatiner-group" class="conainer-fluid my-3">
                 <strong class="mb-0">Select a target folder</strong>
                 <div id="folder-container" class="p-1 my-2 h-25 border border-primary rounded">
-                    <div class="folder-names-container">
+                    <div class="folder-names-container vscroll">
                         <ul id="list-folder-names" class="list-group">
                         </ul>
                     </div>
@@ -163,31 +163,21 @@
             </div>
 
             <!-- Downloading list -->
-            <div id="downloading-container" class="my-2">
-                <table class="table border table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>Stat</th>
-                            <th>File</th>
-                            <th>Folder</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row" class="text-center">
-                                <span class="fas fa-check"></span>
-                            </th>
-                            <td class="w-50">Jpeg</td>
-                            <td class="w-50">Folder</td>
-                            <td class="text-center">
-                                <button  type="button" class="btn btn-default btn-sm">
-                                    <span class="far fa-trash-alt"></span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="downloading-container" class="my-2 p-1 border border-primary rounded">
+                <div class="border download-list-container scroll-table-container">
+                    <table id="table-download-list" class="table table-sm table-striped table-hover ">
+                        <thead>
+                            <tr>
+                                <th>Stat</th>
+                                <th class="w-50">File</th>
+                                <th class="w-50">Folder</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="invisible" id="status-message">
