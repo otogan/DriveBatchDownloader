@@ -28,3 +28,36 @@
 li.active > button > i {
     color: white;
 }
+
+#fake-list {
+	position: relative;
+  z-index: 0;
+  margin-top: 50px;
+}
+
+#fake-table {
+	display: table;
+  table-layout: fixed;
+}
+
+#fake-table > thead {
+	position: fixed;
+  top: 0px;
+	width: 100%;
+  height: 50px;
+	table-layout: fixed;
+  display: table;
+}
+
+#fake-table > thead > th {
+	
+}
+
+#fake-table > thead > tr {
+	  table-layout: fixed;
+  display: table;
+}
+
+#fake-table > tbody {
+	
+}

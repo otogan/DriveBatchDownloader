@@ -5,7 +5,7 @@
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -30,7 +30,7 @@
             <label for="input-file-url"><strong>Enter file address</strong></label>
             <div class="input-group mb-3">
                 <div id="input-url-help-text" class="input-group-prepend">
-                    <span class="input-group-text">URL:</span id="input-url-help-text">
+                    <span class="input-group-text">URL:</span>
                 </div>
                 <input type="url" id="input-file-url" class="form-control"
                     placeholder="http://www.example.com/image.jpeg">
@@ -44,8 +44,7 @@
                     <span id="sequential-state">Show</span> Sequential Downloading Settings
                 </button>
 
-                <div id="sequential-settings-box"
-                    class="p-1 my-2 border border-primary rounded collapse">
+                <div id="sequential-settings-box" class="p-1 my-2 border border-primary rounded collapse">
                     <div id="sequential-info-container" class="mb-1 mx-1">
                         <strong>Replace asterisk (*) to numbers</strong>
                         <button type="button" id="sequential-info-btn" class="btn btn-default btn-sm p-1"
@@ -65,10 +64,12 @@
 
                                     <!-- Modal body -->
                                     <div class="modal-body">
-                                        <div class="my-2">This feature helps download files with names in a sequential order.</div>
+                                        <div class="my-2">This feature helps download files with names in a sequential
+                                            order.</div>
                                         <div class="my-2">
                                             Add an asterisk (*) character into the URL where there is a number.<br>
-                                            The asterisk character will become a placeholder for the increasing numbers defined here.
+                                            The asterisk character will become a placeholder for the increasing numbers
+                                            defined here.
                                         </div>
                                         <div class="my-2">
                                             The wildcard will add preceding zeros to the number values (e.g. 007).
@@ -91,19 +92,22 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">From:</span>
                             </div>
-                            <input type="number" id="number-from" class="form-control" placeholder="0" value="0" min="0" max="99">
+                            <input type="number" id="number-from" class="form-control" placeholder="0" value="0" min="0"
+                                max="99">
                         </div>
                         <div class="input-group mx-1 w-25 min-width-150">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">To:</span>
                             </div>
-                            <input type="number" id="number-to" class="form-control" placeholder="100" value="100" min="0">
+                            <input type="number" id="number-to" class="form-control" placeholder="100" value="100"
+                                min="0">
                         </div>
                         <div class="input-group mx-1 w-25 min-width-150">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Wildcard:</span>
                             </div>
-                            <input type="number" id="number-wildcard" class="form-control" placeholder="0" value="0" min="0" max="200">
+                            <input type="number" id="number-wildcard" class="form-control" placeholder="0" value="0"
+                                min="0" max="200">
                         </div>
                     </div>
 
@@ -178,6 +182,67 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- fake list -->
+            <div class="my-2 p-1 border rounded border-primary">
+                <div id="fake-list" class="border">
+                    <table class="table table-sm table-striped table-hover" id="fake-table">
+						<thead>
+                            <tr style="width: 100%">
+                                <th style="width: 10%">Stat</th>
+                                <th style="width: 40%">File</th>
+                                <th style="width: 40%">Folder</th>
+                                <th style="width: 10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th style="width: 10%"><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td style="width: 40%">http://www.example.com/image000000.jpeg</td>
+                                <td style="width: 40%">Drive root</td>
+                                <td style="width: 10%"><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+                            <tr>
+                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td>http://www.example.com/image0.jpeg</td>
+                                <td>Drive root</td>
+                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+                            <tr>
+                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td>http://www.example.com/image0.jpeg</td>
+                                <td>Drive root</td>
+                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+                            <tr>
+                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td>http://www.example.com/image0.jpeg</td>
+                                <td>Drive root</td>
+                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+							<tr>
+                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td>http://www.example.com/image0.jpeg</td>
+                                <td>Drive root</td>
+                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+							<tr>
+                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td>http://www.example.com/image0.jpeg</td>
+                                <td>Drive root</td>
+                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+							<tr>
+                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
+                                <td>http://www.example.com/image0.jpeg</td>
+                                <td>Drive root</td>
+                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
         <div class="invisible" id="status-message">
