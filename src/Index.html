@@ -8,175 +8,165 @@
   </head>
   <body>
     <div id="container" class="container-sm">
-      <div id="main">
+        <div id="main">
 
-          <!-- input file URL -->
-          <label for="input-file-url"><strong>Enter file address</strong></label>
-          <div class="input-group mb-3">
-              <div id="input-url-help-text" class="input-group-prepend">
-                  <span class="input-group-text">URL:</span id="input-url-help-text">
-              </div>
-              <input type="url" id="input-file-url" class="form-control"
-                  placeholder="http://www.example.com/image.jpeg">
-          </div>
+            <!-- input file URL -->
+            <label for="input-file-url"><strong>Enter file address</strong></label>
+            <div class="input-group mb-3">
+                <div id="input-url-help-text" class="input-group-prepend">
+                    <span class="input-group-text">URL:</span id="input-url-help-text">
+                </div>
+                <input type="url" id="input-file-url" class="form-control"
+                    placeholder="http://www.example.com/image.jpeg">
+            </div>
 
-          <!-- Sequential Settings -->
-          <div id="sequential-settings-group" class="container-fluid px-0 my-3">
-              <button id="btn-show-sequential-settings" type="button" class="btn btn-outline-primary"
-                  data-toggle="collapse" data-target="#sequential-settings-box" aria-expanded="false"
-                  aria-controls="sequential-settings-box">
-                  <span id="sequential-state">Show</span> Sequential Downloading Settings
-              </button>
+            <!-- Sequential Settings -->
+            <div id="sequential-settings-group" class="container-fluid px-0 my-3">
+                <button id="btn-show-sequential-settings" type="button" class="btn btn-outline-primary"
+                    data-toggle="collapse" data-target="#sequential-settings-box" aria-expanded="false"
+                    aria-controls="sequential-settings-box">
+                    <span id="sequential-state">Show</span> Sequential Downloading Settings
+                </button>
 
-              <div id="sequential-settings-box"
-                  class="p-1 my-2 border border-primary rounded collapse">
-                  <div id="sequential-info-container" class="mb-1 mx-1">
-                      <strong>Replace asterisk (*) to numbers</strong>
-                      <button type="button" id="sequential-info-btn" class="btn btn-default btn-sm p-1"
-                          data-toggle="modal" data-target="#myModal">
-                          <i class="far fa-question-circle text-primary"></i>
-                      </button>
-                      <!-- The Modal -->
-                      <div class="modal fade" id="myModal">
-                          <div class="modal-dialog modal-lg">
-                              <div class="modal-content">
+                <div id="sequential-settings-box"
+                    class="p-1 my-2 border border-primary rounded collapse">
+                    <div id="sequential-info-container" class="mb-1 mx-1">
+                        <strong>Replace asterisk (*) to numbers</strong>
+                        <button type="button" id="sequential-info-btn" class="btn btn-default btn-sm p-1"
+                            data-toggle="modal" data-target="#myModal">
+                            <i class="far fa-question-circle text-primary"></i>
+                        </button>
+                        <!-- The Modal -->
+                        <div class="modal fade" id="myModal">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
 
-                                  <!-- Modal Header -->
-                                  <div class="modal-header">
-                                      <h4 class="modal-title">Sequential Downloading Help</h4>
-                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                  </div>
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Sequential Downloading Help</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
 
-                                  <!-- Modal body -->
-                                  <div class="modal-body">
-                                      <div class="my-2">This feature helps download files with names in a sequential order.</div>
-                                      <div class="my-2">
-                                          Add an asterisk (*) character into the URL where there is a number.<br>
-                                          The asterisk character will become a placeholder for the increasing numbers defined here.
-                                      </div>
-                                      <div class="my-2">
-                                          The wildcard will add preceding zeros to the number values (e.g. 007).
-                                      </div>
-                                  </div>
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        <div class="my-2">This feature helps download files with names in a sequential order.</div>
+                                        <div class="my-2">
+                                            Add an asterisk (*) character into the URL where there is a number.<br>
+                                            The asterisk character will become a placeholder for the increasing numbers defined here.
+                                        </div>
+                                        <div class="my-2">
+                                            The wildcard will add preceding zeros to the number values (e.g. 007).
+                                        </div>
+                                    </div>
 
-                                  <!-- Modal footer -->
-                                  <div class="modal-footer">
-                                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                  </div>
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
 
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                  <!-- Sequential numbers -->
-                  <div class="d-flex justify-content-between flex-wrap">
-                      <div class="input-group mx-1 w-25 min-width-150">
-                          <div class="input-group-prepend">
-                              <span class="input-group-text">From:</span>
-                          </div>
-                          <input type="number" id="number-from" class="form-control" placeholder="0" value="0" min="0" max="99">
-                      </div>
-                      <div class="input-group mx-1 w-25 min-width-150">
-                          <div class="input-group-prepend">
-                              <span class="input-group-text">To:</span>
-                          </div>
-                          <input type="number" id="number-to" class="form-control" placeholder="100" value="100" min="1">
-                      </div>
-                      <div class="input-group mx-1 w-25 min-width-150">
-                          <div class="input-group-prepend">
-                              <span class="input-group-text">Wildcard:</span>
-                          </div>
-                          <input type="number" id="number-wildcard" class="form-control" placeholder="0" value="0" min="0" max="200">
-                      </div>
-                  </div>
+                    <!-- Sequential numbers -->
+                    <div class="d-flex justify-content-between flex-wrap my-1">
+                        <div class="input-group mx-1 w-25 min-width-150">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">From:</span>
+                            </div>
+                            <input type="number" id="number-from" class="form-control" placeholder="0" value="0" min="0" max="99">
+                        </div>
+                        <div class="input-group mx-1 w-25 min-width-150">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">To:</span>
+                            </div>
+                            <input type="number" id="number-to" class="form-control" placeholder="100" value="100" min="0">
+                        </div>
+                        <div class="input-group mx-1 w-25 min-width-150">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Wildcard:</span>
+                            </div>
+                            <input type="number" id="number-wildcard" class="form-control" placeholder="0" value="0" min="0" max="200">
+                        </div>
+                    </div>
 
-                  <!-- Sequential samples -->
-                  <div class="m-1 mt-2">
-                      <table class="table table-bordered table-sm">
-                          <thead>
-                              <tr>
-                                  <th colspan="2" class="table-secondary">Generated URLs</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <th scope="row" class="table-secondary">
-                                      <span>First:</span>
-                                  </th>
-                                  <td id="link-1" class="w-100"></td>
-                              </tr>
-                              <tr>
-                                  <th scope="row" class="table-secondary">
-                                      <span>Second:</span>
-                                  </th>
-                                  <td id="link-2" class="w-100"></td>
-                              </tr>
-                              <tr>
-                                  <th scope="row" colspan="2">...</th>
-                              </tr>
-                              <tr>
-                                  <th scope="row" class="table-secondary">
-                                      <span>Last:</span>
-                                  </th>
-                                  <td id="link-n" class="w-100"></td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-          </div>
+                    <!-- Sequential samples -->
+                    <div class="m-1 mt-2">
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="table-secondary">Generated URLs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="table-secondary">
+                                        <span>First:</span>
+                                    </th>
+                                    <td id="link-1" class="w-100"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="table-secondary">
+                                        <span>Second:</span>
+                                    </th>
+                                    <td id="link-2" class="w-100"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" colspan="2">...</th>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="table-secondary">
+                                        <span>Last:</span>
+                                    </th>
+                                    <td id="link-n" class="w-100"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-          <!-- Folder Selector -->
-          <div id="folder-conatiner-group" class="conainer-fluid my-3">
-              <strong class="mb-0">Select a target folder</strong>
-              <div id="folder-container" class="p-1 my-2 h-25 border border-primary rounded">
-                  <div class="folder-names-container">
-                      <ul id="list-folder-names" class="list-group">
-                      </ul>
-                  </div>
-              </div>
-          </div>
+            <!-- Folder Selector -->
+            <div id="folder-conatiner-group" class="conainer-fluid my-3">
+                <strong class="mb-0">Select a target folder</strong>
+                <div id="folder-container" class="p-1 my-2 h-25 border border-primary rounded">
+                    <div class="folder-names-container vscroll">
+                        <ul id="list-folder-names" class="list-group">
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-          <!-- Action Buttons -->
-          <div id="btn-container" class="my-2">
-              <button id="btn-add" class="btn btn-primary">Add</button>
-              <button id="btn-start" class="btn btn-success">
-                  Start <i class="fas fa-play"></i>
-              </button>
-          </div>
+            <!-- Action Buttons -->
+            <div id="btn-container" class="my-2">
+                <button id="btn-add" class="btn btn-primary">Add</button>
+                <button id="btn-start" class="btn btn-success">
+                    Start <i class="fas fa-play"></i>
+                </button>
+            </div>
 
-          <!-- Downloading list -->
-          <div id="downloading-container" class="my-2">
-              <table class="table border table-sm table-striped">
-                  <thead>
-                      <tr>
-                          <th>Stat</th>
-                          <th>File</th>
-                          <th>Folder</th>
-                          <th>Action</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                          <th scope="row" class="text-center">
-                              <span class="fas fa-check"></span>
-                          </th>
-                          <td class="w-50">Jpeg</td>
-                          <td class="w-50">Folder</td>
-                          <td class="text-center">
-                              <button  type="button" class="btn btn-default btn-sm">
-                                  <span class="far fa-trash-alt"></span>
-                              </button>
-                          </td>
-                      </tr>
-                  </tbody>
-              </table>
-          </div>
-      </div>
-      <div class="invisible" id="status-message">
-      </div>
-  </div>
+            <!-- Downloading list -->
+            <div id="downloading-container" class="my-2 p-1 border border-primary rounded">
+                <div class="border download-list-container scroll-table-container">
+                    <table id="table-download-list" class="table table-sm table-striped table-hover ">
+                        <thead>
+                            <tr>
+                                <th>Stat</th>
+                                <th class="w-50">File</th>
+                                <th class="w-50">Folder</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="invisible" id="status-message">
+        </div>
+    </div>
     <?!= HtmlService.createHtmlOutputFromFile('JavaScript').getContent(); ?>
   </body>
 </html>
