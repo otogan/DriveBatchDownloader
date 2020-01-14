@@ -1,3 +1,4 @@
+var maxParalelDownloading = 3;
 var sequentialSttngs = {from: 0, to: 100, wildcard: 0};
 var rootFldrId = 'root';
 var rootFldrNm = 'Drive root';
@@ -5,16 +6,23 @@ var folders = [{id: rootFldrId, name: rootFldrNm}];
 var importedFolders = [];
 var selectedFolder = 0;
 var downloadList = [];
+var downloadProcessingList = [];
+var downloadWaitingList = [];
+var downloadDoneList = [];
 var downloading = false;
 var downloadStatus = {
-    ready: 'Ready',
+    ready: 'Waiting',
     downloading: 'Downloading',
     success: 'Successful',
-    fail: 'Failed'
+    fail: 'Failed',
+    error: 'Error'
 }
 
-
+// document.ready
 $(function () {
+    //enables the tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+    
     // input file url
     $('#input-file-url')
         .on("change paste keyup", inputUrlChanged)
@@ -48,8 +56,9 @@ $(function () {
     // buttons
     $('#btn-add').click(btnAddClicked); 
     $('#btn-start-stop').click(startStopBtnClicked);
-
-    // test case
+    $('#btn-clear').click(clearBtnClicked); 
+    
+    // test case (to be removed)
     $('#input-file-url')
         .val('http://www.example.com/image*.jpeg')
         .change();
@@ -57,6 +66,8 @@ $(function () {
         .val(30)
         .change();
     $('#btn-add').click();
+
+    updateProgressBar();
 });
 
 // input URL
@@ -340,36 +351,53 @@ function btnAddClicked() {
             folderId: targetFolder.id,
             folderName: targetFolder.name
         });
+        downloadWaitingList.push(id);
 
         addItemToDownloadList(id);
 
+        // scroll down to the list to show the last added item
+        scrollDown($('#download-list-container'));
+
     } while (asterisk && from <= to);
 
-    // add downloading check
+    updateProgressBar();
+
+    // downloading check
+    checkDownloading();
+
 }
 
 function addItemToDownloadList(id) {
     var downloadData = downloadList[id];
     var cStatIcon = $('<i></i>')
-        .addClass(getStatClass(downloadData.status))
-        .attr('value', downloadStatus[downloadData.status]);
+        .addClass(getStatClass(downloadData.status) + ' has-tooltip')
+        .tooltip(getTooltipOptionsObj(downloadStatus[downloadData.status]));
     var cStat = $('<th></th>')
         .attr('scope', 'row')
         .addClass('col1 text-center')
         .append(cStatIcon);
+    var sFileText = $('<span></span>')
+        .addClass('has-tooltip')
+        .tooltip(getTooltipOptionsObj(downloadData.fileName, true))
+        .append(downloadData.fileName);
     var cFile = $('<td></td>')
         .addClass('col2 cFile')
+        .append(sFileText);
+    var cFolderText = $('<span></span>')
+        .addClass('has-tooltip')
+        .tooltip(getTooltipOptionsObj(downloadData.folderName))
         .append(downloadData.fileName);
     var cFolder = $('<td></td>')
         .addClass('col3 cFolder')
-        .append(downloadData.folderName);
-    var cActionEraseBtnIcon = $('<i></i>')
+        .append(cFolderText);
+    var cActionRemoveBtnIcon = $('<i></i>')
         .addClass('far fa-trash-alt');
-    var cActionEraseBtn = $('<button></button>')
+    var cActionRemoveBtn = $('<button></button>')
         .attr('type', 'button')
-        .addClass('btn btn-default btn-sm cActionEraseBtn')
-        .append(cActionEraseBtnIcon)
-        .click(cActionEraseBtnClicked)
+        .addClass('btn btn-default btn-sm cActionEraseBtn has-tooltip')
+        .tooltip(getTooltipOptionsObj('Remove'))
+        .append(cActionRemoveBtnIcon)
+        .click(cActionRemoveBtnClicked)
         .hover(
             function () {
                 $(this).addClass('text-danger')
@@ -385,26 +413,74 @@ function addItemToDownloadList(id) {
             });
     var cAction = $('<td></td>')
         .addClass('col4 text-center cAction')
-        .append(cActionEraseBtn);
+        .append(cActionRemoveBtn);
     var newRow = $('<tr></tr>')
         .attr('id', 'tr-' + id)
+        .attr('value', id)
         .append(cStat, cFile, cFolder, cAction);
     $('#table-download-list > tbody')
         .append(newRow);
+    return newRow;
 }
 
 function getStatClass(stat) {
     var stats = {
         ready: 'far fa-clock',
-        downloading: 'spinner-grow spinner-grow-sm',
-        success: 'fas fa-cloud',
-        fail: 'fas fa-exclamation-circle'
+        downloading: 'spinner-grow spinner-grow-sm text-success',
+        success: 'fas fa-cloud text-primary',
+        fail: 'fas fa-exclamation-circle text-danger'
     }
-    return stat in stats ? stats[stat] : 'fas fa-times';
+    return stat in stats ? stats[stat] : 'fas fa-times text-warning';
 }
 
-function cActionEraseBtnClicked() {
+function getTooltipOptionsObj(title, large) {
+    var options = {
+        title: title, 
+        container: 'body', 
+        boundary: 'viewport'
+    };
+    if (large) {
+        options['template'] = '<div class="tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner mw-100"></div></div>';
+    }
+    return options;
+}
 
+function scrollDown(element) {
+    $(element).animate({scrollTop: $(element)[0].scrollHeight}, 10);
+}
+
+function cActionRemoveBtnClicked() {
+    var btn = $(this);
+    var row = btn.parent().parent();
+    row.find('.has-tooltip').tooltip('dispose');
+    var id = +row.attr('value');
+    var iWaiting = downloadWaitingList.indexOf(id);
+    if (iWaiting > -1) {
+        downloadWaitingList.splice(iWaiting, 1);
+    }
+    var iDone = downloadDoneList.indexOf(id);
+    if (iDone > -1) {
+        downloadDoneList.splice(iDone, 1);
+    }
+    row.remove();
+    updateProgressBar();
+}
+
+// clear button
+function clearBtnClicked() {
+    downloadWaitingList = [];
+    downloadDoneList = [];
+    $('#table-download-list > tbody > tr').remove();
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    var total = downloadProcessingList.length + downloadWaitingList.length + downloadDoneList.length;
+    var percent = Math.floor((downloadDoneList.length / total) * 100);
+    percent = percent === percent ? percent + '%' : '0%';
+    $('#download-progress-bar')
+        .width(percent)
+        .text(percent);
 }
 
 // start button
@@ -412,7 +488,6 @@ function startStopBtnClicked() {
     var btn = $(this);
     var text = btn.find('span');
     var btnIcon = btn.find('i');
-    console.log(downloading)
     if (downloading) {
         text.text('Start ')
         btnIcon
@@ -431,6 +506,64 @@ function startStopBtnClicked() {
             .addClass('btn-danger');
     }
     downloading = !downloading;
+
+    // start downloading sequence
+    checkDownloading();
+}
+
+function checkDownloading() {
+    // if stopped or passes the paralel downloading limit, return
+    if (!downloading || downloadProcessingList.length >= maxParalelDownloading) return;
+
+    // if no more waiting, return; also if no download in progress, reset numbers
+    if (downloadWaitingList.length == 0) {
+        if (downloadProcessingList.length == 0) {
+            downloadDoneList = [];
+        }
+        return;
+    }
+
+    var id = downloadWaitingList.shift();
+    downloadProcessingList.push(id);
+    var downloadData = downloadList[id];
+    downloadData.status = 'downloading';
+    
+    updateStatusIcon(id, downloadData.status);
+
+    initiateDownload(id);
+        
+    if (downloadWaitingList.length > 0 
+        && downloadProcessingList.length < maxParalelDownloading) 
+        checkDownloading();
+}
+
+function updateStatusIcon(id, status) {
+    var row = $('#tr-' + id);
+    row.find('th > i')
+        .tooltip('dispose')
+        .tooltip(getTooltipOptionsObj(downloadStatus[status]))
+        .attr('class', getStatClass(status) + ' has-tooltip');
+}
+
+function initiateDownload(id) {
+    var downloadData = downloadList[id];
+
+    google.script.run
+        .withSuccessHandler(function (data, id) {
+            updateStatusIcon(id, data.status);
+            var id = downloadProcessingList.shift();
+            downloadDoneList.push(id);
+            checkDownloading();
+        })
+        .withFailureHandler(function (msg, id) {
+            console.error('File failed to save', msg);
+            updateStatusIcon(id, 'error');
+            var id = downloadProcessingList.shift();
+            downloadDoneList.push(id);
+            checkDownloading();
+        })
+        .withUserObject(id)
+        .saveFile(downloadData);
 }
 
 // deprecated

@@ -27,7 +27,9 @@
         <div id="main">
 
             <!-- input file URL -->
-            <label for="input-file-url"><strong>Enter file address</strong></label>
+            <label for="input-file-url">
+                <h4>Enter file address</h4>
+            </label>
             <div class="input-group mb-3">
                 <div id="input-url-help-text" class="input-group-prepend">
                     <span class="input-group-text border-secondary">URL:</span>
@@ -46,11 +48,11 @@
 
                 <div id="sequential-settings-box" class="p-1 my-2 border border-secondary rounded collapse">
                     <div id="sequential-info-container" class="mb-1 mx-1">
-                        <strong>Replace asterisk (*) to numbers</strong>
-                        <button type="button" id="sequential-info-btn" class="btn btn-default btn-sm p-1"
-                            data-toggle="modal" data-target="#myModal">
-                            <i class="far fa-question-circle text-primary"></i>
-                        </button>
+                        <h5>Replace asterisk (*) to numbers
+                            <button type="button" id="sequential-info-btn" class="btn btn-default  p-1"
+                                data-toggle="modal" data-target="#myModal">
+                                <i class="far fa-question-circle text-primary"></i>
+                            </button></h5>
                         <!-- The Modal -->
                         <div class="modal fade" id="myModal">
                             <div class="modal-dialog modal-lg">
@@ -58,7 +60,8 @@
 
                                     <!-- Modal Header -->
                                     <div class="modal-header">
-                                        <h4 class="modal-title">Sequential Downloading Help</h4>
+                                        <h4 class="modal-title"><i class="fas fa-info-circle mr-2"></i>Sequential
+                                            Downloading Help</h4>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
 
@@ -149,7 +152,7 @@
 
             <!-- Folder Selector -->
             <div id="folder-conatiner-group" class="conainer-fluid my-3">
-                <strong class="mb-0">Select a target folder</strong>
+                <h4 class="mb-0">Select a target folder</h4>
                 <div id="folder-names-border-container" class="p-1 my-2 h-25 border border-secondary rounded">
                     <div id="folder-names-container" class="vscroll">
                         <ul id="list-folder-names" class="list-group">
@@ -159,11 +162,19 @@
             </div>
 
             <!-- Action Buttons -->
-            <div id="btn-container" class="my-2">
+            <div id="btn-container" class="my-2 clearfix">
                 <button id="btn-add" class="btn btn-primary">Add</button>
                 <button id="btn-start-stop" class="btn btn-success">
                     <span>Start </span><i class="fas fa-play"></i>
                 </button>
+                <button id="btn-clear" class="btn btn-secondary float-right">Clear</button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div id="progress-bar-container" class="container p-0">
+                <div class="progress">
+                    <div id="download-progress-bar" class="progress-bar" style="width: 0%">0%</div>
+                </div>
             </div>
 
             <!-- Downloading list -->
@@ -183,8 +194,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <div class="invisible" id="status-message">
         </div>
     </div>
     <script src="JavaScript.js"></script>

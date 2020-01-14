@@ -36,40 +36,28 @@ function getFolders(parentId) {
 
 /**
  * Saves the file with the given URL into the target folder with the given ID
+ * 
+ * data = { status: string,
+ *          url: string,
+ *          fileName: string,
+ *          folderId: string,
+ *          folderName: string
+ *        }
  */
-function saveFile(url, folderId, sequence) {
+function saveFile(data) {
+  var folderId = data.folderId;
+  var url = data.url;
   var folder = folderId == 'root' ? DriveApp.getRootFolder() : DriveApp.getFolderById(folderId);
-  var checked = sequence.checked;
-  var from = +sequence.from;
-  var to = +sequence.to;
-  var wildcard = +sequence.wildcard;
+
+  try {
+    var blob = UrlFetchApp.fetch(url).getBlob();
+    folder.createFile(blob);
+    data.fileName = blob.getName();
+    data.status = 'success';
+  }
+  catch (error) {
+    data.status = 'fail';
+  }
   
-  var fileNames = [];
-  
-  if(checked) checked = url.search(/\*/) > -1;
-  
-  do {
-    var newUrl = url;
-    if (checked) {
-      var i = from + '';
-      while (i.length < wildcard) i = '0' + i;
-      newUrl = newUrl.replace(/\*/g, i);
-      from++;
-    }
-    
-    try {
-      var blob = UrlFetchApp.fetch(newUrl).getBlob();
-      folder.createFile(blob);
-      fileNames.push([true, blob.getName()]);
-    }
-    catch(error) {
-      fileNames.push([false, error.toString()]);
-    }
-    
-  } while (checked && from <= to);
-  
-  return {
-    folderName: folder.getName(),
-    fileNames: fileNames
-  };
+  return data;
 }
