@@ -6,6 +6,12 @@ var importedFolders = [];
 var selectedFolder = 0;
 var downloadList = [];
 var downloading = false;
+var downloadStatus = {
+    ready: 'Ready',
+    downloading: 'Downloading',
+    success: 'Successful',
+    fail: 'Failed'
+}
 
 
 $(function () {
@@ -40,7 +46,8 @@ $(function () {
     addFolderToList(rootFldrNm, 0).addClass('active');
     
     // buttons
-    $('#btn-add').click(btnAddClicked);
+    $('#btn-add').click(btnAddClicked); 
+    $('#btn-start-stop').click(startStopBtnClicked);
 
     // test case
     $('#input-file-url')
@@ -58,6 +65,9 @@ function inputUrlChanged() {
     if (value.match(/\*/)) {
         $('#sequential-settings-box').collapse('show');
         $('#sequential-state').text('Hide');
+    } else {
+        $('#sequential-settings-box').collapse('hide');
+        $('#sequential-state').text('Show');
     }
     updateGeneratedLinks();
 }
@@ -341,16 +351,17 @@ function btnAddClicked() {
 function addItemToDownloadList(id) {
     var downloadData = downloadList[id];
     var cStatIcon = $('<i></i>')
-        .addClass(getStatClass(downloadData.status));
+        .addClass(getStatClass(downloadData.status))
+        .attr('value', downloadStatus[downloadData.status]);
     var cStat = $('<th></th>')
         .attr('scope', 'row')
-        .addClass('text-center')
+        .addClass('col1 text-center')
         .append(cStatIcon);
     var cFile = $('<td></td>')
-        .addClass('w-50 cFile')
+        .addClass('col2 cFile')
         .append(downloadData.fileName);
     var cFolder = $('<td></td>')
-        .addClass('w-50 cFolder')
+        .addClass('col3 cFolder')
         .append(downloadData.folderName);
     var cActionEraseBtnIcon = $('<i></i>')
         .addClass('far fa-trash-alt');
@@ -373,7 +384,7 @@ function addItemToDownloadList(id) {
                     .addClass('far');
             });
     var cAction = $('<td></td>')
-        .addClass('text-center cAction')
+        .addClass('col4 text-center cAction')
         .append(cActionEraseBtn);
     var newRow = $('<tr></tr>')
         .attr('id', 'tr-' + id)
@@ -394,6 +405,32 @@ function getStatClass(stat) {
 
 function cActionEraseBtnClicked() {
 
+}
+
+// start button
+function startStopBtnClicked() {
+    var btn = $(this);
+    var text = btn.find('span');
+    var btnIcon = btn.find('i');
+    console.log(downloading)
+    if (downloading) {
+        text.text('Start ')
+        btnIcon
+            .removeClass('fa-stop')
+            .addClass('fa-play');
+        btn
+            .removeClass('btn-danger')
+            .addClass('btn-success');
+    } else {
+        text.text('Stop ')
+        btnIcon
+            .removeClass('fa-play')
+            .addClass('fa-stop');
+        btn
+            .removeClass('btn-success')
+            .addClass('btn-danger');
+    }
+    downloading = !downloading;
 }
 
 // deprecated

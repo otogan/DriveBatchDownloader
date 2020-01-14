@@ -30,21 +30,21 @@
             <label for="input-file-url"><strong>Enter file address</strong></label>
             <div class="input-group mb-3">
                 <div id="input-url-help-text" class="input-group-prepend">
-                    <span class="input-group-text">URL:</span>
+                    <span class="input-group-text border-secondary">URL:</span>
                 </div>
-                <input type="url" id="input-file-url" class="form-control"
+                <input type="url" id="input-file-url" class="form-control border-secondary border-left-0"
                     placeholder="http://www.example.com/image.jpeg">
             </div>
 
             <!-- Sequential Settings -->
             <div id="sequential-settings-group" class="container-fluid px-0 my-3">
-                <button id="btn-show-sequential-settings" type="button" class="btn btn-outline-primary"
+                <button id="btn-show-sequential-settings" type="button" class="btn btn-outline-secondary"
                     data-toggle="collapse" data-target="#sequential-settings-box" aria-expanded="false"
                     aria-controls="sequential-settings-box">
                     <span id="sequential-state">Show</span> Sequential Downloading Settings
                 </button>
 
-                <div id="sequential-settings-box" class="p-1 my-2 border border-primary rounded collapse">
+                <div id="sequential-settings-box" class="p-1 my-2 border border-secondary rounded collapse">
                     <div id="sequential-info-container" class="mb-1 mx-1">
                         <strong>Replace asterisk (*) to numbers</strong>
                         <button type="button" id="sequential-info-btn" class="btn btn-default btn-sm p-1"
@@ -78,7 +78,7 @@
 
                                     <!-- Modal footer -->
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
                                     </div>
 
                                 </div>
@@ -150,8 +150,8 @@
             <!-- Folder Selector -->
             <div id="folder-conatiner-group" class="conainer-fluid my-3">
                 <strong class="mb-0">Select a target folder</strong>
-                <div id="folder-container" class="p-1 my-2 h-25 border border-primary rounded">
-                    <div class="folder-names-container vscroll">
+                <div id="folder-names-border-container" class="p-1 my-2 h-25 border border-secondary rounded">
+                    <div id="folder-names-container" class="vscroll">
                         <ul id="list-folder-names" class="list-group">
                         </ul>
                     </div>
@@ -161,88 +161,27 @@
             <!-- Action Buttons -->
             <div id="btn-container" class="my-2">
                 <button id="btn-add" class="btn btn-primary">Add</button>
-                <button id="btn-start" class="btn btn-success">
-                    Start <i class="fas fa-play"></i>
+                <button id="btn-start-stop" class="btn btn-success">
+                    <span>Start </span><i class="fas fa-play"></i>
                 </button>
             </div>
 
             <!-- Downloading list -->
-            <div id="downloading-container" class="my-2 p-1 border border-primary rounded">
-                <div class="border download-list-container scroll-table-container">
+            <div id="download-list-border-container" class="my-2 p-1 border border-secondary rounded">
+                <div id="download-list-container" class="border scroll-table-container">
                     <table id="table-download-list" class="table table-sm table-striped table-hover ">
                         <thead>
                             <tr>
-                                <th>Stat</th>
-                                <th class="w-50">File</th>
-                                <th class="w-50">Folder</th>
-                                <th>Action</th>
+                                <th class="col1 text-center">Status</th>
+                                <th class="col2">File</th>
+                                <th class="col3">Folder</th>
+                                <th class="col4 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- fake list -->
-            <div class="my-2 p-1 border rounded border-primary">
-                <div id="fake-list" class="border">
-                    <table class="table table-sm table-striped table-hover" id="fake-table">
-						<thead>
-                            <tr style="width: 100%">
-                                <th style="width: 10%">Stat</th>
-                                <th style="width: 40%">File</th>
-                                <th style="width: 40%">Folder</th>
-                                <th style="width: 10%">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th style="width: 10%"><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td style="width: 40%">http://www.example.com/image000000.jpeg</td>
-                                <td style="width: 40%">Drive root</td>
-                                <td style="width: 10%"><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-                            <tr>
-                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td>http://www.example.com/image0.jpeg</td>
-                                <td>Drive root</td>
-                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-                            <tr>
-                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td>http://www.example.com/image0.jpeg</td>
-                                <td>Drive root</td>
-                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-                            <tr>
-                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td>http://www.example.com/image0.jpeg</td>
-                                <td>Drive root</td>
-                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-							<tr>
-                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td>http://www.example.com/image0.jpeg</td>
-                                <td>Drive root</td>
-                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-							<tr>
-                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td>http://www.example.com/image0.jpeg</td>
-                                <td>Drive root</td>
-                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-							<tr>
-                                <th><i class="far fa-clock" aria-hidden="true"></i></th>
-                                <td>http://www.example.com/image0.jpeg</td>
-                                <td>Drive root</td>
-                                <td><button type="button" class="btn btn-default btn-sm cActionEraseBtn"><i class="fa-trash-alt far" aria-hidden="true"></i></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
             </div>
         </div>
         <div class="invisible" id="status-message">
