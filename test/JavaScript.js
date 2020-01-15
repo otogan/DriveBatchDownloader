@@ -1,4 +1,4 @@
-var maxParalelDownloading = 3;
+var maxParalelDownloading = 1;
 var sequentialSttngs = {from: 0, to: 100, wildcard: 0};
 var rootFldrId = 'root';
 var rootFldrNm = 'Drive root';
@@ -20,9 +20,9 @@ var downloadStatus = {
 
 // document.ready
 $(function () {
-    //enables the tooltips
+    // initialize tooltips
     $('[data-toggle="tooltip"]').tooltip();
-    
+
     // input file url
     $('#input-file-url')
         .on("change paste keyup", inputUrlChanged)
@@ -32,7 +32,7 @@ $(function () {
     })
 
     // sequential settings
-    $('#btn-show-sequential-settings').click(btnSequentialSettingsClicked);
+    // $('#btn-show-sequential-settings').click(btnSequentialSettingsClicked);
     $('#sequential-info-btn')
         .hover(
             function () {
@@ -59,15 +59,15 @@ $(function () {
     $('#btn-clear').click(clearBtnClicked); 
     
     // test case (to be removed)
-    $('#input-file-url')
-        .val('http://www.example.com/image*.jpeg')
-        .change();
-    $('#number-to')
-        .val(30)
-        .change();
-    $('#btn-add').click();
+    // $('#input-file-url')
+    //     .val('http://www.example.com/image*.jpeg')
+    //     .change();
+    // $('#number-to')
+    //     .val(30)
+    //     .change();
+    // $('#btn-add').click();
 
-    updateProgressBar();
+    // updateProgressBar();
 });
 
 // input URL
@@ -75,14 +75,15 @@ function inputUrlChanged() {
     var value = $(this).val();
     if (value.match(/\*/)) {
         $('#sequential-settings-box').collapse('show');
-        $('#sequential-state').text('Hide');
+        // $('#sequential-state').text('Hide');
     } else {
         $('#sequential-settings-box').collapse('hide');
-        $('#sequential-state').text('Show');
+        // $('#sequential-state').text('Show');
     }
     updateGeneratedLinks();
 }
 
+// deprecated
 // sequential settings
 function btnSequentialSettingsClicked() {
     var btn = $(this);
@@ -386,7 +387,7 @@ function addItemToDownloadList(id) {
     var cFolderText = $('<span></span>')
         .addClass('has-tooltip')
         .tooltip(getTooltipOptionsObj(downloadData.folderName))
-        .append(downloadData.fileName);
+        .append(downloadData.folderName);
     var cFolder = $('<td></td>')
         .addClass('col3 cFolder')
         .append(cFolderText);
@@ -476,8 +477,8 @@ function clearBtnClicked() {
 
 function updateProgressBar() {
     var total = downloadProcessingList.length + downloadWaitingList.length + downloadDoneList.length;
-    var percent = Math.floor((downloadDoneList.length / total) * 100);
-    percent = percent === percent ? percent + '%' : '0%';
+    total = Math.max(1, total);
+    var percent = Math.floor((downloadDoneList.length / total) * 100) + '%';
     $('#download-progress-bar')
         .width(percent)
         .text(percent);
@@ -488,6 +489,7 @@ function startStopBtnClicked() {
     var btn = $(this);
     var text = btn.find('span');
     var btnIcon = btn.find('i');
+    var progressBar = $('#download-progress-bar');
     if (downloading) {
         text.text('Start ')
         btnIcon
@@ -496,6 +498,8 @@ function startStopBtnClicked() {
         btn
             .removeClass('btn-danger')
             .addClass('btn-success');
+        progressBar
+            .removeClass('progress-bar-animated');
     } else {
         text.text('Stop ')
         btnIcon
@@ -504,6 +508,8 @@ function startStopBtnClicked() {
         btn
             .removeClass('btn-success')
             .addClass('btn-danger');
+        progressBar
+            .addClass('progress-bar-animated');
     }
     downloading = !downloading;
 
@@ -545,6 +551,11 @@ function updateStatusIcon(id, status) {
         .attr('class', getStatClass(status) + ' has-tooltip');
 }
 
+function updateFileName(id, name) {
+    var row = $('#tr-' + id);
+    row.find('td.cFile > span').text(name);
+}
+
 function initiateDownload(id) {
     var downloadData = downloadList[id];
 
@@ -553,6 +564,9 @@ function initiateDownload(id) {
             updateStatusIcon(id, data.status);
             var id = downloadProcessingList.shift();
             downloadDoneList.push(id);
+            updateFileName(id, data.fileName);
+            downloadList[id] = data;
+            updateProgressBar();
             checkDownloading();
         })
         .withFailureHandler(function (msg, id) {
@@ -560,56 +574,9 @@ function initiateDownload(id) {
             updateStatusIcon(id, 'error');
             var id = downloadProcessingList.shift();
             downloadDoneList.push(id);
+            updateProgressBar();
             checkDownloading();
         })
         .withUserObject(id)
         .saveFile(downloadData);
-}
-
-// deprecated
-function btnSaveClicked() {
-    var fileUrl = $('#input-file-url').val();
-    if (fileUrl == '') {
-        fileInput.focus();
-        return;
-    }
-
-    var sequence = {
-        checked: $('#check-sequential').prop('checked'),
-        from: $('#number-from').val(),
-        to: $('#number-to').val(),
-        wildcard: $('#number-wildcard').val()
-    }
-
-    this.disabled = true;
-
-    var selected = $("input[type='radio'][name='folder']:checked");
-    var id = selected.val();
-
-    google.script.run
-        .withSuccessHandler(function (data, element) {
-            element.disabled = false;
-            var error = false;
-            var msg = $('<div>Target folder: ' + data.folderName + '<br></div>');
-            for (var i in data.fileNames) {
-                var spn = $('<span></span>');
-                if (data.fileNames[i][0]) {
-                    msg.append('[saved]&nbsp;');
-                } else {
-                    msg.append('[failed]&nbsp;');
-                    spn.addClass('error');
-                }
-                spn.text(data.fileNames[i][1]);
-                msg.append(spn, '<br>');
-            }
-            showStatus(msg, false);
-            $('#input-file-url').focus();
-        })
-        .withFailureHandler(function (msg, element) {
-            element.disabled = false;
-            console.error('File failed to save', msg);
-            showStatus('File failed to save, ' + msg, true);
-        })
-        .withUserObject(this)
-        .saveFile(fileUrl, id, sequence);
 }
