@@ -321,7 +321,8 @@ function updateFolderNames(data, btn) {
 
 // action buttons
 function btnAddClicked() {
-    var fileUrl = $('#input-file-url').val();
+    var fileInput = $('#input-file-url');
+    var fileUrl = fileInput.val();
     if (fileUrl == '') {
         fileInput.focus();
         return;
@@ -484,8 +485,11 @@ function updateProgressBar() {
         .text(percent);
 }
 
-// start button
+// start/stop button
 function startStopBtnClicked() {
+    if (downloadDoneList.length == 0 && downloadWaitingList.length == 0) {
+        // call modal
+    }
     var btn = $(this);
     var text = btn.find('span');
     var btnIcon = btn.find('i');
