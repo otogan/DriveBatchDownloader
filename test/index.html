@@ -63,8 +63,8 @@
                 <div id="sequential-settings-box" class="p-1 my-2 border border-secondary rounded collapse">
                     <div id="sequential-info-container" class="mb-1 mx-1">
                         <h5>Replace asterisk (*) to numbers
-                            <button type="button" id="sequential-info-btn" class="btn btn-default  p-1"
-                                data-toggle="modal" data-target="#myInfoModal">
+                            <button type="button" id="sequential-info-btn" class="btn btn-default p-1"
+                                data-toggle="modal" data-target="#myInfoModal" data-content="#mc-sequential-info">
                                 <i class="far fa-question-circle text-primary"></i>
                             </button>
                         </h5>
@@ -190,6 +190,42 @@
         </div>
     </div>
 
+    <!-- Modal Contents (mc) -->
+    <!-- Sequential Downloading Help -->
+    <div id="mc-sequential-info" class="invisible">
+        <div class="modal-title">Sequential Downloading Help</div>
+        <div class="modal-body">
+            <div class="my-2">This feature helps add sequential file names to the download queue.</div>
+            <div class="my-2">
+                Replace the number with the asterisk (*) whilcard character in the URL for the file name
+                pattern.<br>
+                The asterisk character will become a placeholder for the increasing numbers
+                defined here.
+            </div>
+            <div class="my-2 bg-light p-2">
+                <h5>Example:</h5>
+                <div class="lead text-info">http://www.example.com/image<strong
+                        class="text-danger">1</strong>.jpeg
+                </div>
+                <div class="my-2">Replacing the number in the sample address with the asterisk (*) character
+                    will generate links in the desired number range as shown in the samples below.</div>
+                <div class="lead text-info">http://www.example.com/image<strong
+                        class="text-danger">*</strong>.jpeg
+                </div>
+                <div class="my-2">The patern will be like this:</div>
+                <div class="lead">http://www.example.com/image1.jpeg</div>
+                <div class="lead">http://www.example.com/image2.jpeg</div>
+                <div class="lead">http://www.example.com/image3.jpeg</div>
+                <div class="lead">...</div>
+            </div>
+            <div class="my-2">
+                It will add preceding zeros to the number values to accomodate the wildcard size if defined.
+                (e.g.
+                001)
+            </div>
+        </div>
+    </div>
+
     <!-- Modals -->
     <!-- The Info Modal -->
     <div class="modal fade" id="myInfoModal">
@@ -198,41 +234,14 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title"><i class="fas fa-info-circle mr-2"></i>Sequential
-                        Downloading Help</h4>
+                    <h4 class="mr-2 mb-0"><i class="fas fa-info-circle"></i></h4>
+                    <h4 class="modal-title">Title</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <div class="my-2">This feature helps add sequential file names to the download queue.</div>
-                    <div class="my-2">
-                        Replace the number with the asterisk (*) whilcard character in the URL for the file name
-                        pattern.<br>
-                        The asterisk character will become a placeholder for the increasing numbers
-                        defined here.
-                    </div>
-                    <div class="my-2 bg-light p-2">
-                        <h5>Example:</h5>
-                        <div class="lead text-info">http://www.example.com/image<strong
-                                class="text-danger">1</strong>.jpeg
-                        </div>
-                        <div class="my-2">Replacing the number in the sample address with the asterisk (*) character
-                            will generate links in the desired number range as shown in the samples below.</div>
-                        <div class="lead text-info">http://www.example.com/image<strong
-                                class="text-danger">*</strong>.jpeg
-                        </div>
-                        <div class="my-2">The patern will be like this:</div>
-                        <div class="lead">http://www.example.com/image1.jpeg</div>
-                        <div class="lead">http://www.example.com/image2.jpeg</div>
-                        <div class="lead">http://www.example.com/image3.jpeg</div>
-                        <div class="lead">...</div>
-                    </div>
-                    <div class="my-2">
-                        It will add preceding zeros to the number values to accomodate the wildcard size if defined.
-                        (e.g.
-                        001)
-                    </div>
+                    Body
                 </div>
 
                 <!-- Modal footer -->
